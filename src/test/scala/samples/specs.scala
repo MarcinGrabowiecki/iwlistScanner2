@@ -1,5 +1,6 @@
 package samples
 
+import marcin.{Saga, LogReader}
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mutable._
@@ -29,4 +30,30 @@ class MySpecTest extends Specification {
       "Hello world" must endWith("world")
     }
   }
+
+
+
+  "LogReader" should {
+    val lr = new LogReader
+    "read single line" in {
+      lr.getLine must have size(34)
+    }
+
+    "be able to unread" in {
+      val line1=lr.getLine
+      lr.unread()
+      line1 must beEqualTo(lr.getLine)
+    }
+
+  }
+
+  "Saga" should {
+    "read log" in {
+      new Saga().proc(new LogReader());
+      //new ESSth().parse;
+      1 must beEqualTo(1)
+    }
+  }
+
+
 }
