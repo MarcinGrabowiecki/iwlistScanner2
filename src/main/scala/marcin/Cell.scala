@@ -20,13 +20,16 @@ class Cell(printer:Printer) {
   }
   def addField(key:String,value:String): Cell ={
     counter+=1
-
+    //println(s"${key} : ${value}")
     key match {
       case "Frequency" => fields.put(key,value.toString.substring(0,5))
-      case "ESSID" => fields.put(key,value.toString.substring(0,5))
+      case "ESSID" => fields.put(key,value)
       case "Extra: Last beacon" => fields.put("LastBeacon",value.substring(1,value.length-6))
       case "Extra" => fields.put("tsf",value.substring(4))
       case "Unknown" => fields.put(key+"-"+counter,value)
+      case "BitRates" => {
+        if(fields.containsKey(key)) fields.put(key+1,value) else fields.put(key,value)
+      }
       case _ => fields.put(key,value)
     }
     this
