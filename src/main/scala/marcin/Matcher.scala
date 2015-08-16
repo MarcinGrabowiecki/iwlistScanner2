@@ -8,6 +8,12 @@ import scala.util.matching.Regex.Match
 
   class Matcher(group: String) {
 
+  class BetterMatch(val m:Match){
+    def firstMatch=m.group(0)
+  }
+
+  implicit def bla(m:Match)=new BetterMatch(m)
+
     private var line: Option[String] = None
     private var prefix = ""
 

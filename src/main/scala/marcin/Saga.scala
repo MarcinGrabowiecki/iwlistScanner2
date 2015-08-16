@@ -22,33 +22,30 @@ class Saga extends Printer {
 
     new Matcher( """::: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\d{10})""")
       .forText(line)
-      .ifMatching(m => {
+      .ifMatching(m =>
       retDate = new Date(m.group(1).toLong * 1000)
-    })
+    )
 
     retCel.addField("scanDate", "" + retDate)
 
     if (line.startsWith(" "*10+"Cell ")) {
       retCel.write
       retCel = new Cell(printer)
-
       new Matcher( """Cell (..) - Address: (.*)""")
         .setStartingPrefix(21)
         .forText(line)
-        .ifMatching(m => {
-        retCel.addField("Cell", m.group(1))
-        retCel.addField("Address", m.group(2))
-      })
+        .ifMatching(m => retCel.addField("Cell", m.group(1)).addField("Address", m.group(2))
+      )
     }
 
     if (line.startsWith(" " * 20)) {
       val m = new Matcher( """([A-Z].*):(.*)""")
         .setStartingPrefix(20)
         .forText(line)
-        .ifMatching(m => {
+        .ifMatching(m =>
         if (m.group(1) == "Bit Rates") {
           val next = lr.getLine
-          if (next.startsWith(" "*30)) {
+          if (next.startsWith(" "*29)) {
             retCel.addField(m.group(1) + "-1", m.group(1) + next.trim)
           } else {
             lr.unread()
@@ -57,16 +54,12 @@ class Saga extends Printer {
         } else {
           retCel.addField(m.group(1), m.group(2))
         }
-
-      })
+      )
 
       new Matcher( """Quality=(../..)  Signal level=-(..) dBm""")
-        .setStartingPrefix(20)
-        .forText(line)
-        .ifMatching(m => {
-        retCel.addField("Quality", m.group(1))
-        retCel.addField("SignalLevel", m.group(2))
-      })
+        .setStartingPrefix(20).forText(line)
+        .ifMatching(m => retCel.addField("Quality", m.group(1)).addField("SignalLevel", m.group(2))
+      )
     }
     process(lr, retCel, retDate)
   }

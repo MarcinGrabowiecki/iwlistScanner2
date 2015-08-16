@@ -19,21 +19,22 @@ class Cell(printer:Printer) {
   def write={
     printer.print(o.writeValueAsString(fields))
   }
-  def addField(key:String,value:String): Unit ={
+  def addField(key:String,value:String): Cell ={
     counter+=1
     if(key.equals("Frequency")){
       fields.put(key,value.toString.substring(0,5))
-      return
+      return this
     }
     if(key.equals("ESSID")){
       fields.put(key,value.substring(1,value.length-1))
-      return
+      return this
     }
     if(key.equals("Extra: Last beacon")){
       fields.put("LastBeacon",value.substring(1,value.length-6))
-      return
+      return this
     }
     fields.put(key,value)
+    this
   }
 
 }
