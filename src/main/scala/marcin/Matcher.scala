@@ -26,7 +26,7 @@ import scala.util.matching.Regex.Match
       !group.r.findFirstMatchIn(line.get).isEmpty
     }
 
-    def ifMatching(f:Match=>Any): Matcher ={
+    def forMatching(f:Match=>Any): Matcher ={
       if(isMatching) {
         f(getMatch)
       }
@@ -41,7 +41,7 @@ import scala.util.matching.Regex.Match
       (prefix + group).r.findFirstMatchIn(line.get).map(_ group n).getOrElse("")
     }
 
-    def setStartingPrefix(num: Int): Matcher = {
+    def setStartingSpaces(num: Int): Matcher = {
       this.prefix = """^\s{"""+num+"""}"""
       this
     }

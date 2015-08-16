@@ -16,13 +16,27 @@ class Saga extends Printer {
     var retCel = cell
     var retDate = date
     if (line == null) return
+
+
+    val ie = """\s*IE:(.*)""".r
+    val unknown = """ Unknown: (.*)""".r
+    line match {
+      case ie(text)=>text match {
+        case unknown(text1)=> cell.addField("Unknown",text1)
+        case _ =>
+      }
+      case _ =>
+    }
+
+
+
     if (line.startsWith(" "*20+"IE: ")) {
       line = line.replace("                    IE: ", "                    IE-")
     }
 
     new Matcher( """::: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\d{10})""")
       .forText(line)
-      .ifMatching(m =>
+      .forMatching(m =>
       retDate = new Date(m.group(1).toLong * 1000)
     )
 
@@ -32,17 +46,22 @@ class Saga extends Printer {
       retCel.write
       retCel = new Cell(printer)
       new Matcher( """Cell (..) - Address: (.*)""")
-        .setStartingPrefix(21)
+        .setStartingSpaces(21)
         .forText(line)
-        .ifMatching(m => retCel.addField("Cell", m.group(1)).addField("Address", m.group(2))
+        .forMatching(m => retCel.addField("Cell", m.group(1)).addField("Address", m.group(2))
       )
     }
 
+
+
+
+
     if (line.startsWith(" " * 20)) {
-      val m = new Matcher( """([A-Z].*):(.*)""")
-        .setStartingPrefix(20)
-        .forText(line)
-        .ifMatching(m =>
+
+
+      new Matcher( """([A-Z].*):(.*)""")
+        .setStartingSpaces(20).forText(line)
+        .forMatching(m =>
         if (m.group(1) == "Bit Rates") {
           val next = lr.getLine
           if (next.startsWith(" "*29)) {
@@ -57,8 +76,8 @@ class Saga extends Printer {
       )
 
       new Matcher( """Quality=(../..)  Signal level=-(..) dBm""")
-        .setStartingPrefix(20).forText(line)
-        .ifMatching(m => retCel.addField("Quality", m.group(1)).addField("SignalLevel", m.group(2))
+        .setStartingSpaces(20).forText(line)
+        .forMatching(m => retCel.addField("Quality", m.group(1)).addField("SignalLevel", m.group(2))
       )
     }
     process(lr, retCel, retDate)
