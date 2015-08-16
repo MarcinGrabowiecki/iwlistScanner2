@@ -36,6 +36,7 @@ class Saga extends Printer {
     val unknown = """Unknown: (.*)""".r
     val ieee = """(IEEE|WPA) (.*)""".r
     val bitrates="""\s*Bit Rates:(.*)""".r
+    val bitratesCont="""\s{30}([0-9].*)""".r
 
 //    if (line.startsWith(" "*20+"IE: ")) {
 //      line = line.replace("                    IE: ", "                    IE-")
@@ -66,7 +67,8 @@ class Saga extends Printer {
           case ieee(prefix,text)=> retCel.addField(prefix,text); suckIndent(prefix)
           case _ =>
         }
-        case bitrates(values)=>retCel.addField("BitRates",values);
+        case bitrates(values)=>retCel.addField("BitRates",values)
+        case bitratesCont(values)=>retCel.addField("BitRatesCont",values)
         case _ =>
       }
 

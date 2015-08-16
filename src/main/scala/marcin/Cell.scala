@@ -28,8 +28,9 @@ class Cell(printer:Printer) {
       case "Extra" => fields.put("tsf",value.substring(4))
       case "Unknown" => fields.put(key+"-"+counter,value)
       case "BitRates" => {
-        if(fields.containsKey(key)) fields.put(key+1,value) else fields.put(key,value)
+        if (fields.containsKey(key)) fields.put(key + 1, value) else fields.put(key, value)
       }
+      case "BitRatesCont" => fields.put("BitRates", fields.get("BitRates")+"; "+value)
       case _ => fields.put(key,value)
     }
     this
