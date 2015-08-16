@@ -21,21 +21,15 @@ class Cell(printer:Printer) {
   }
   def addField(key:String,value:String): Cell ={
     counter+=1
-    if(key.equals("Frequency")){
-      fields.put(key,value.toString.substring(0,5))
-      return this
+
+    key match {
+      case "Frequency" => fields.put(key,value.toString.substring(0,5))
+      case "ESSID" => fields.put(key,value.toString.substring(0,5))
+      case "Extra: Last beacon" => fields.put("LastBeacon",value.substring(1,value.length-6))
+      case "Extra:tsf=" => fields.put("tsf",value.substring(1,value.length))
+      case _ => fields.put(key,value)
     }
-    if(key.equals("ESSID")){
-      fields.put(key,value.substring(1,value.length-1))
-      return this
-    }
-    if(key.equals("Extra: Last beacon")){
-      fields.put("LastBeacon",value.substring(1,value.length-6))
-      return this
-    }
-    fields.put(key,value)
     this
   }
-
 }
 
