@@ -10,6 +10,13 @@ import java.util.Date
 
 class Saga extends Printer {
 
+
+  private val ie = """\s*IE: (.*)""".r
+  private val unknown = """Unknown: (.*)""".r
+  private val ieee = """(IEEE|WPA) (.*)""".r
+  private val bitrates="""\s*Bit Rates:(.*)""".r
+  private val bitratesCont="""\s{30}([0-9].*)""".r
+
   @tailrec
   private def process(lr: LogReader, cell: Cell, date: Date): Unit = {
 
@@ -31,12 +38,6 @@ class Saga extends Printer {
         lr.unread
       }
     }
-
-    val ie = """\s*IE: (.*)""".r
-    val unknown = """Unknown: (.*)""".r
-    val ieee = """(IEEE|WPA) (.*)""".r
-    val bitrates="""\s*Bit Rates:(.*)""".r
-    val bitratesCont="""\s{30}([0-9].*)""".r
 
 //    if (line.startsWith(" "*20+"IE: ")) {
 //      line = line.replace("                    IE: ", "                    IE-")
