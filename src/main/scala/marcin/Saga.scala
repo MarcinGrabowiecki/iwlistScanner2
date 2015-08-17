@@ -16,6 +16,9 @@ class Saga extends Printer {
   private val rBitrates = """\s*Bit Rates:(.*)""".r
   private val rBitratesCont = """\s{30}([0-9].*)""".r
   private val rQuality="""\s{20}Quality=(../..)  Signal level=-(..) dBm.*""".r
+  private val rCellAddress="""\s{10}Cell (..) - Address: (.*)""".r
+  private val r20="""\s{20}""".r
+
 
   @tailrec
   private def process(lr: LogReader, cell: Cell, date: Date): Unit = {
@@ -58,18 +61,20 @@ class Saga extends Printer {
 
     if (line.startsWith(" " * 20)) {
 
-
-
       line match {
-        case rIe(text) => text match {
-          case rUnknown(text1) => retCel.addField("Unknown", text1)
-          case rIeee(prefix, text) => retCel.addField(prefix, text); suckIndent(prefix)
-          case _ =>
+        case r20=>{
+          line match {
+            case rIe(text) => text match {
+              case rUnknown(text1) => retCel.addField("Unknown", text1)
+              case rIeee(prefix, text) => retCel.addField(prefix, text); suckIndent(prefix)
+              case _ =>
+            }
+            case rBitrates(values) => retCel.addField("BitRates", values)
+            case rBitratesCont(values) => retCel.addField("BitRatesCont", values)
+            case rQuality(qual,lvl) => retCel.addField("Quality", qual).addField("SignalLevel", lvl)
+            case _ =>
+          }
         }
-        case rBitrates(values) => retCel.addField("BitRates", values)
-        case rBitratesCont(values) => retCel.addField("BitRatesCont", values)
-        case rQuality(qual,lvl) => retCel.addField("Quality", qual).addField("SignalLevel", lvl)
-        case _ =>
       }
 
       new Matcher( """([A-Z].*):(.*)""")
