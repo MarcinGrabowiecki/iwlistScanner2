@@ -25,7 +25,7 @@ class Saga extends Printer {
         val v=tmps.split(": ");
         var vv="+"
         if(v.size>1) vv=v(1)
-        cell.addField(tmps.split(" ")(0),vv)
+        cell addField(tmps.split(" ")(0),vv)
         suckIndent(pref)
       } else {
         lr.unread
