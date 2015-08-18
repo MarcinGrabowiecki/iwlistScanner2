@@ -24,6 +24,4 @@ class LogReader {
   def unread(): Unit ={
     undoBuffer = lastRead
   }
-
-
 }

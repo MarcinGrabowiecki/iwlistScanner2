@@ -18,7 +18,9 @@ class Saga extends Printer {
   private val rQuality="""\s{20}Quality=(../..)  Signal level=-(..) dBm.*""".r
   private val rCellAddress="""\s{10}Cell (..) - Address: (.*)""".r
   private val r20="""\s{20}""".r
-
+  private val rAny="""\s{20}([A-Z].*):(.*)""".r
+  private val rDate="""::: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} ([0-9]{10})""".r
+  private val rWlan0="""wlan0     Scan completed :""".r
 
   @tailrec
   private def process(lr: LogReader, cell: Cell, date: Date): Unit = {
@@ -33,19 +35,12 @@ class Saga extends Printer {
       if (line.startsWith(" " * 23)) {
         val tmps = pref + "-" + line.trim
         val v = tmps.split(": ");
-        var vv = "+"
-        if (v.size > 1) vv = v(1)
-        cell addField(tmps.split(" ")(0), vv)
+        cell addField(tmps.split(" ")(0), if (v.size>1) v(1) else "+")
         suckIndent(pref)
       } else {
         lr.unread
       }
     }
-
-    new Matcher( """::: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} (\d{10})""")
-      .forText(line)
-      .forMatching(m => retDate = new Date(m.group(1).toLong * 1000)
-      )
 
     retCel.addField("scanDate", "" + retDate)
 
@@ -59,30 +54,25 @@ class Saga extends Printer {
         )
     }
 
-    if (line.startsWith(" " * 20)) {
-
       line match {
+        //case Experymentator(bla,bul)  => println(bla)
         case r20=>{
           line match {
             case rIe(text) => text match {
               case rUnknown(text1) => retCel.addField("Unknown", text1)
               case rIeee(prefix, text) => retCel.addField(prefix, text); suckIndent(prefix)
-              case _ =>
+              case doNothing => throw new RuntimeException(doNothing)
             }
             case rBitrates(values) => retCel.addField("BitRates", values)
             case rBitratesCont(values) => retCel.addField("BitRatesCont", values)
             case rQuality(qual,lvl) => retCel.addField("Quality", qual).addField("SignalLevel", lvl)
-            case _ =>
+            case rAny(key,value) => retCel.addField(key,value)
+            case rDate(value) => retDate = new Date(value.toLong * 1000)
+            case rWlan0 =>
+            case doNothing => throw new RuntimeException(doNothing)
           }
         }
       }
-
-      new Matcher( """([A-Z].*):(.*)""")
-        .setStartingSpaces(20).forText(line)
-        .forMatching(m => retCel.addField(m.group(1), m.group(2))
-        )
-
-    }
     process(lr, retCel, retDate)
   }
 

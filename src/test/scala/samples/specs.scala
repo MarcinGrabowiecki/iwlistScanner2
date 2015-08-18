@@ -1,6 +1,6 @@
 package samples
 
-import marcin.{Saga, LogReader}
+import marcin.{ESSth, Saga, LogReader}
 import org.junit.runner.RunWith
 import org.specs2.runner.JUnitRunner
 import org.specs2.mutable._
