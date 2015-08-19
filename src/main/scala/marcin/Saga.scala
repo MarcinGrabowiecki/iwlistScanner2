@@ -3,6 +3,8 @@ package marcin
 import scala.annotation.tailrec
 import java.util.Date
 
+import scala.collection.mutable.ListBuffer
+
 /**
  * Created by Marcin on 2015-05-28.
  */
@@ -21,6 +23,8 @@ class Saga extends Printer {
   private val rAny="""\s{20}([A-Z].*):(.*)""".r
   private val rDate="""::: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} ([0-9]{10})""".r
   private val rWlan0="""wlan0     Scan completed :""".r
+
+  val cells=ListBuffer[Cell]()
 
   @tailrec
   private def process(lr: LogReader, cell: Cell, date: Date): Unit = {
@@ -42,20 +46,20 @@ class Saga extends Printer {
       }
     }
 
-    retCel.addField("scanDate", "" + retDate)
-
-    if (line.startsWith(" " * 10 + "Cell ")) {
-      retCel.write
-      retCel = new Cell(printer)
-      new Matcher( """Cell (..) - Address: (.*)""")
-        .setStartingSpaces(21)
-        .forText(line)
-        .forMatching(m => retCel.addField("Cell", m.group(1)).addField("Address", m.group(2))
-        )
-    }
+    retCel.addField("scanDate", "" + retDate).addField("scanDateLong", if(retDate!=null) ""+retDate.getTime else "")
 
       line match {
-        //case Experymentator(bla,bul)  => println(bla)
+        case rCellAddress(cell,address)=>{
+          retCel.write
+          //cells += retCel
+          //if(cells.size%1000==0){
+            //println("----------------------------------")
+            //println(cells.groupBy(c=>c.getField("ESSID")).map(k=>k._1))
+          //}
+          //if(System.currentTimeMillis()%100==0) println(cells.size)
+          retCel = new Cell(printer)
+          retCel.addField("Cell", cell).addField("Address", address)
+        }
         case r20=>{
           line match {
             case rIe(text) => text match {
