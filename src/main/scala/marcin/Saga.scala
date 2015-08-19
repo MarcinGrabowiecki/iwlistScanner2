@@ -9,7 +9,6 @@ import scala.collection.mutable.ListBuffer
  * Created by Marcin on 2015-05-28.
  */
 
-
 class Saga extends Printer {
 
   private val rIe = """\s*IE: (.*)""".r
@@ -17,12 +16,12 @@ class Saga extends Printer {
   private val rIeee = """(IEEE|WPA) (.*)""".r
   private val rBitrates = """\s*Bit Rates:(.*)""".r
   private val rBitratesCont = """\s{30}([0-9].*)""".r
-  private val rQuality="""\s{20}Quality=(../..)  Signal level=-(..) dBm.*""".r
-  private val rCellAddress="""\s{10}Cell (..) - Address: (.*)""".r
+  private val rQuality="""\s{20}(Quality)=(..)/70  Signal level=-(..) dBm.*""".r
+  private val rCellAddress="""\s{10}(Cell) (..) - (Address): (.*)""".r
   private val r20="""\s{20}""".r
   private val rAny="""\s{20}([A-Z].*):(.*)""".r
   private val rDate="""::: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} ([0-9]{10})""".r
-  private val rWlan0="""wlan0     Scan completed :""".r
+  private val rWlan0="""wlan0\s{5}Scan completed :""".r
 
   val cells=ListBuffer[Cell]()
 
@@ -46,10 +45,10 @@ class Saga extends Printer {
       }
     }
 
-    retCel.addField("scanDate", "" + retDate).addField("scanDateLong", if(retDate!=null) ""+retDate.getTime else "")
+    retCel.addField("scanDate", retDate).addField("scanDateLong", if(retDate!=null) retDate.getTime else 0)
 
       line match {
-        case rCellAddress(cell,address)=>{
+        case rCellAddress(cellName,cell,adressName,address)=>{
           retCel.write
           //cells += retCel
           //if(cells.size%1000==0){
@@ -58,7 +57,7 @@ class Saga extends Printer {
           //}
           //if(System.currentTimeMillis()%100==0) println(cells.size)
           retCel = new Cell(printer)
-          retCel.addField("Cell", cell).addField("Address", address)
+          retCel.addField(cellName, cell).addField(adressName, address)
         }
         case r20=>{
           line match {
@@ -69,7 +68,7 @@ class Saga extends Printer {
             }
             case rBitrates(values) => retCel.addField("BitRates", values)
             case rBitratesCont(values) => retCel.addField("BitRatesCont", values)
-            case rQuality(qual,lvl) => retCel.addField("Quality", qual).addField("SignalLevel", lvl)
+            case rQuality(qualityName,qual,lvl) => retCel.addField(qualityName, qual.toInt).addField("SignalLevel", lvl.toInt)
             case rAny(key,value) => retCel.addField(key,value)
             case rDate(value) => retDate = new Date(value.toLong * 1000)
             case rWlan0 =>

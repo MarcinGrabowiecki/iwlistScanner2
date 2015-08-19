@@ -13,7 +13,7 @@ import scala.collection.mutable.ListBuffer
  */
 class Cell(printer:Printer) {
   var counter=0;
-  private val fields=new util.HashMap[String,Object]();
+  private val fields=new util.HashMap[String,Any]();
   val mapper=new ObjectMapper()
   mapper.setVisibility(JsonMethod.FIELD, Visibility.ANY);
   def write={
@@ -36,18 +36,18 @@ class Cell(printer:Printer) {
     }
   }
 
-  def getField(key:String):Object={
+  def getField(key:String):Any={
     return fields.get(key)
   }
 
-  def addField(key:String,value:String): Cell ={
+  def addField(key:String,value:Any): Cell ={
     counter+=1
     //println(s"${key} : ${value}")
     key match {
-      case "Frequency" => fields.put(key,value.toString.substring(0,5))
-      case "ESSID" => fields.put(key,value.substring(1,value.length-1))
-      case "Extra: Last beacon" => fields.put("LastBeacon",value.substring(1,value.length-6))
-      case "Extra" => fields.put("tsf",value.substring(4))
+      case "Frequency" => fields.put(key,value.toString.substring(0,5).toFloat)
+      case "ESSID" => fields.put(key,value.toString.substring(1,value.toString.length-1))
+      case "Extra: Last beacon" => fields.put("LastBeacon",value.toString.substring(1,value.toString.length-6).toInt)
+      case "Extra" => fields.put("tsf",value.toString.substring(4))
       case "Unknown" =>
         //fields.put(key+"-"+counter,value)
       case "BitRates" => {
