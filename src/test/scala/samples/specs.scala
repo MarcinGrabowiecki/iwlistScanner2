@@ -17,6 +17,7 @@ import org.specs2.mutable._
  *   http://etorreborre.github.com/specs2/guide/org.specs2.guide.Runners.html
  *
  */
+
 @RunWith(classOf[JUnitRunner])
 class MySpecTest extends Specification {
   "The 'Hello world' string" should {
@@ -31,8 +32,6 @@ class MySpecTest extends Specification {
     }
   }
 
-
-
   "LogReader" should {
     val lr = new LogReader
     "read single line" in {
@@ -44,12 +43,11 @@ class MySpecTest extends Specification {
       lr.unread()
       line1 must beEqualTo(lr.getLine)
     }
-
   }
 
   "Saga" should {
     "read log" in {
-      new Saga().proc(new LogReader());
+      new Saga().process(new LogReader());
       //new ESSth().parse;
       1 must beEqualTo(1)
     }

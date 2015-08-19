@@ -27,7 +27,7 @@ class Saga extends Printer {
   val cells=ListBuffer[Cell]()
 
   @tailrec
-  private def process(lr: LogReader, cell: Cell, date: Date): Unit = {
+  final def process(lr: LogReader, cell: Cell=new Cell(printer), date: Date=null): Unit = {
 
     var line = lr.getLine
     var retCel = cell
@@ -80,9 +80,6 @@ class Saga extends Printer {
     process(lr, retCel, retDate)
   }
 
-  def proc(lr: LogReader): Unit = {
-    process(lr, new Cell(printer), null)
-  }
 
   var printer: Printer = this
 

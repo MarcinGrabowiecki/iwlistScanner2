@@ -14,7 +14,7 @@ class ESSth extends Printer{
   val parse={
     val saga=new Saga()
     saga.printer=this;
-    saga.proc(new LogReader);
+    saga.process(new LogReader);
     node.close();
   }
 
