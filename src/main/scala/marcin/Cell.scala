@@ -46,7 +46,7 @@ class Cell(printer:Printer) {
     key match {
       case "Frequency" => fields.put(key,value.toString.substring(0,5).toFloat)
       case "ESSID" => fields.put(key,value.toString.substring(1,value.toString.length-1))
-      case "Extra: Last beacon" => fields.put("LastBeacon",value.toString.substring(1,value.toString.length-6).toInt)
+      case "Extra: Last beacon" => fields.put("LastBeacon",value.toString.substring(1,value.toString.length-6).toLong)
       case "Extra" => fields.put("tsf",value.toString.substring(4))
       case "Unknown" =>
         //fields.put(key+"-"+counter,value)

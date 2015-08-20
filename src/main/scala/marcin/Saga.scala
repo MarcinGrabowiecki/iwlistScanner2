@@ -12,7 +12,7 @@ import scala.collection.mutable.ListBuffer
 class Saga extends Printer {
 
   private val rIe = """\s*IE: (.*)""".r
-  private val rUnknown = """Unknown: (.*)""".r
+  private val rUnknown = """(Unknown): (.*)""".r
   private val rIeee = """(IEEE|WPA) (.*)""".r
   private val rBitrates = """\s*Bit Rates:(.*)""".r
   private val rBitratesCont = """\s{30}([0-9].*)""".r
@@ -62,7 +62,7 @@ class Saga extends Printer {
         case r20=>{
           line match {
             case rIe(text) => text match {
-              case rUnknown(text1) => retCel.addField("Unknown", text1)
+              case rUnknown(label,text1) => retCel.addField(label, text1)
               case rIeee(prefix, text) => retCel.addField(prefix, text); suckIndent(prefix)
               case doNothing => throw new RuntimeException(doNothing)
             }
