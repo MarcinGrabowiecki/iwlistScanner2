@@ -45,7 +45,7 @@ class Saga extends Printer {
       }
     }
 
-    retCel.addField("scanDate", retDate).addField("scanDateLong", if(retDate!=null) retDate.getTime else 0)
+    retCel.addField("scanDate", ""+retDate).addField("scanDateLong", if(retDate!=null) retDate.getTime else 0)
 
       line match {
         case rCellAddress(cellName,cell,adressName,address)=>{
