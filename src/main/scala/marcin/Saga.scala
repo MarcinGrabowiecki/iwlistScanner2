@@ -31,7 +31,10 @@ class Saga extends Printer {
     var line = lr.getLine
     var retCel = cell
     var retDate = date
-    if (line == null) return
+    if (line == null) {
+      //CellProcessor.process(cells)
+      return
+    }
 
     def suckIndent(pref: String): Unit = {
       line = lr.getLine
@@ -50,7 +53,10 @@ class Saga extends Printer {
       line match {
         case rCellAddress(cellName,cell,adressName,address)=>{
           retCel.write
-          //cells += retCel
+          cells += retCel
+          //println(cells.size)
+          //if(cells.size>100000) {CellProcessor.process(cells);System.exit(0)}
+
           //if(cells.size%1000==0){
             //println("----------------------------------")
             //println(cells.groupBy(c=>c.getField("ESSID")).map(k=>k._1))
