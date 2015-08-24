@@ -33,6 +33,9 @@ class Saga extends Printer {
     var retCel = cell
     var retDate = date
     if (line == null) {
+      println(
+        pr.addresses.toList.sortBy(e=>e._2).map(e=>e._1)
+      )
       //CellProcessor.process(cells)
       return
     }

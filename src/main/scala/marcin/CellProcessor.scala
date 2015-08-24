@@ -6,6 +6,7 @@ import scala.collection.mutable.ListBuffer
 /**
  * Created by m on 2015-08-22.
  */
+@deprecated
 object CellProcessor {
   def process(cls:ListBuffer[Cell])={
 
