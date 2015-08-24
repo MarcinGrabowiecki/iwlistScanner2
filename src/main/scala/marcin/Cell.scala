@@ -11,7 +11,7 @@ import scala.collection.mutable.ListBuffer
 /**
  * Created by m on 2015-05-29.
  */
-class Cell(printer:Printer) {
+case class Cell(printer:Printer) {
   var counter=0;
   private val fields=new util.HashMap[String,Any]();
   val mapper=new ObjectMapper()
@@ -38,6 +38,11 @@ class Cell(printer:Printer) {
 
   def getField(key:String):Any={
     return fields.get(key)
+  }
+
+  def getOptionalField(key:String):Option[Any]={
+    if(getField(key)!=null) return Some(getField(key))
+    return None
   }
 
   def addField(key:String,value:Any): Cell ={

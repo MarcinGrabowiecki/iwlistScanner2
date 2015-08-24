@@ -22,6 +22,7 @@ class Saga extends Printer {
   private val rAny="""\s{20}([A-Z].*):(.*)""".r
   private val rDate="""::: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} ([0-9]{10})""".r
   private val rWlan0="""wlan0\s{5}Scan completed :""".r
+  val pr=new CSVPrinter()
 
   val cells=ListBuffer[Cell]()
 
@@ -53,7 +54,8 @@ class Saga extends Printer {
       line match {
         case rCellAddress(cellName,cell,adressName,address)=>{
           retCel.write
-          cells += retCel
+          pr.printt(retCel)
+          //cells += retCel
           //println(cells.size)
           //if(cells.size>100000) {CellProcessor.process(cells);System.exit(0)}
 
@@ -88,5 +90,6 @@ class Saga extends Printer {
 
   var printer: Printer = this
 
-  override def print(line: String): Unit = println(line)
+  override def print(line: String): Unit = {}//println(line)
+
 }
