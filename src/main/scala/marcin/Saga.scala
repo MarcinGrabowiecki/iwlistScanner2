@@ -37,6 +37,7 @@ class Saga extends Printer {
         pr.addresses.toList.sortBy(e=>e._2).map(e=>e._1)
       )
       //CellProcessor.process(cells)
+      pr.close()
       return
     }
 
