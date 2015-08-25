@@ -40,6 +40,28 @@ case class Cell(printer:Printer) {
     return fields.get(key)
   }
 
+
+  //----
+  def getQuality:Int={
+    return getField("Quality").asInstanceOf[Int]
+  }
+  def getSignalLevel:Int={
+    return getField("SignalLevel").asInstanceOf[Int]
+  }
+
+  def getAddress:String={
+    return getField("Address").asInstanceOf[String]
+  }
+
+  def getName:String={
+    return getField("ESSID").asInstanceOf[String]
+  }
+
+  def getDateLong:Long={
+    return getField("scanDateLong").asInstanceOf[Long]
+  }
+  //----
+
   def getOptionalField(key:String):Option[Any]={
     if(getField(key)!=null) return Some(getField(key))
     return None
