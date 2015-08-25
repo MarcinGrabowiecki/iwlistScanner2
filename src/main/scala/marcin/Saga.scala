@@ -22,12 +22,17 @@ class Saga extends Printer {
   private val rAny="""\s{20}([A-Z].*):(.*)""".r
   private val rDate="""::: [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} ([0-9]{10})""".r
   private val rWlan0="""wlan0\s{5}Scan completed :""".r
+  var counter=0L
   val pr=new CSVPrinter()
-
   val cells=ListBuffer[Cell]()
 
   @tailrec
   final def process(lr: LogReader, cell: Cell=new Cell(printer), date: Date=null): Unit = {
+
+    counter=counter+1
+    if(counter%100000==0){
+      println(counter)
+    }
 
     var line = lr.getLine
     var retCel = cell
